@@ -1,0 +1,26 @@
+<div class="col-12 md:col-6 lg:col-4 mx-auto">
+  <h1 class="text-center">Bejelentkezés</h1>
+
+  <div>
+    <span class="p-float-label">
+      <input [(ngModel)]="login.loginName" pInputText id="user" class="w-full">
+      <label for="user">Felhasználói név</label>
+    </span>
+  </div>
+
+  <div>
+    <span class="p-float-label mt-5">
+      <p-password [(ngModel)]="login.password" [feedback]="false" [toggleMask]="true"></p-password>
+      <label for="password">Jelszó</label>
+    </span>
+  </div>
+
+    <div class="mt-5">
+      <p-messages [(value)]="errorMessages" [enableService]="false"></p-messages>
+    </div>
+
+
+  <div class="mt-5 text-center">
+    <p-button label="Bejelentkezés" icon="pi pi-check" [loading]="loading" (click)="loginClick()"></p-button>
+  </div>
+</div>

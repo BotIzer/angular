@@ -1,0 +1,44 @@
+<h1 class="text-center">Kártyaolvasók</h1>
+
+<div>
+  <p-table [value]="readers" dataKey="id" editMode="row">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Azonosító</th>
+        <th>Megnevezés</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-reader>
+      <tr [pEditableRow]="reader">
+        <td>
+          {{reader.id}}
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="clonedReader.room" >
+              <p-dropdown [options]="directions" [(ngModel)]="clonedReader.direction"></p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{reader.name}}
+            </ng-template>
+
+          </p-cellEditor>
+        </td>
+        <td>
+          @if (editing) {
+            @if (editing == reader.id) {
+              <button pButton type="button" pSaveEditableRow icon="pi pi-check" (click)="save()"></button>
+              <button pButton type="button" pCancelEditableRow icon="pi pi-times" (click)="cancel()"></button>
+            }
+            @else {
+              <button pButton type="button" pInitEditableRow icon="pi pi-pencil" (click)="editInit(reader)"></button>
+            }
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+</div>

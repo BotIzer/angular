@@ -1,0 +1,140 @@
+Új projekt létrehozása:
+
+ng new ArtOfAi --standalone=false --skip-tests
+-> CSS
+-> N
+
+
+Bootstrap hozzáadása (amennyiben szükséges):
+
+package.json-ben:
+npm i bootstrap
+ha nem kerül be:
+dependencies: {
+
+"bootstrap": "{version}" (CTRL + SPACE beajánlja, különben google version. Ha nem lehet rákeresni: 5.3.3
+}
+
+angular.json fájlba KÖTELEZŐEN:
+
+"styles": ["src/styles.css","node_modules/bootstrap/dist/css/bootstrap.min.css"]
+"scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
+
+HA NEM MŰKÖDIK BOOTSTRAP VALAMI OKNÁL FOGVA, AKKOR:
+@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+
+HTTP Servicek importálása:
+
+src/app-on belül:
+ng g s http
+
+app.module.ts-ben:
+imports: [HttpClientModule, FormsModule] (fent, ha nem automatikusan 
+importál: import {HttpClientModule} from '@angular/common/http';/ @angular/forms
+
+http.service.ts-ben:
+Url = 'urlPath'
+constructor(private http: HttpClient) {} [IMPORTÁLÁS HA NEM SIKERÜL! CTRL + . segít az add importal, ha működik!]
+getAllPelda(): Observable<{fieldName: type, fieldName2: type2}[]> (ha van sok idő)
+getAllPelda(): Observable<any[]> (ha nincs idő){
+return this.http.get<any[]>(`${this.Url}/api/pathname`)
+}
+getSpecificThing(fieldThatWeUseToGet: type): Observable<any[]>{
+return this.http.get<any[]>(`${this.Url}/api/pathname/${fieldThatWeUseToGet}`)
+} 
+
+postPelda(model: any): Observable<any>{ (itt csak egy dolgot küldünk, array, ha többet!
+return this.http.post(`${this.Url}/api/pathname`,model)
+}
+
+Komponens létrehozása:
+ng g c ComponentName
+ha nem jelenik meg, akkor app.module.ts-ben:
+declarations-ben componentnév!
+
+
+Pathek létrehozása:
+app-routing.module.ts-ben:
+
+{path: 'pathname', component: ComponentName}
+
+Komponens belsejében megvalósítás:
+
+something.component.ts-ben
+
+importálni a fieldeket, amiket http.service.ts-ben definiáltunk:
+(any helyett típus is, ha feladat kéri)
+somethings: any[] = []
+specificThing = ''
+
+constructor (private httpService: HttpService) {}
+(HA VALAMIÉRT NEM MŰKÖDNE, AKKOR implement OnInit + import OnInit @angular/core-ból!
+ngOnInit(){	
+this.httpService.getAllPelda().subscribe({
+next: (result: any[]) => this.somethings = result,
+error: (err: any) => console.log(err) [VAGY RETURN ERR, ha azt kérik]
+})
+}
+
+getBySomething(){
+this.httpService.getSpecificThing(this.specificThing).subscribe({
+next: (result: any[]) => this.something = result,
+error: (err: any) => console.log(err) [VAGY RETURN ERR, ha azt kérik]
+})
+}
+
+Angular for használata:
+@for (something of somethings; track $index){
+<option [value]="something.fieldName">{{something.displayFieldName}}</option>
+
+}
+
+select-be binding: [(ngModel)] = "specificThing" (change)= "functionWeWantToRun()"
+img source átadás: [src]="something.imgSource"
+
+Conditional rendering:
+
+@if(fieldNameToCheck == valueToCheck)
+{
+
+}
+@else{
+
+}
+
+routing (link esetén, href helyett):
+[routerLink= "pathname"]
+
+routing (gombnyomással):
+(click) = "routeFunction()"
+
+routeFunction(){
+this.router.navigate(['/pathname'], {queryParams: {
+params
+}})
+}
+
+constructorban importálni kell a routert! private router: Router
+
+queryParams ellenőrzése (ha kéne):
+route importálás: private route: ActivatedRoute
+this.route.queryParams.subscribe({
+next: (value: any) =>{
+// ellenőrzések...
+
+},
+error:
+})
+
+
+Error kezelés (ha kell):
+errormessage = ''
+// messaget a backend field neve alapján kapjuk
+
+this.errormessage = ''
+//ellenőrzések...
+errorban:
+this.errormessage = err.error?.message ?? err.message
+
+FONTOS: MINDEN HELYEN MEG KELL ADNI AZ [(ngModel)] = "model.something"-et ahol a modelt használjuk! Így tudunk
+bindingolni csak!
